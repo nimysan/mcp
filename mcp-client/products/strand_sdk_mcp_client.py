@@ -18,7 +18,7 @@ products_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
             command="python", 
-            args=["/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-jackery-product/products_by_crawl.py"]
+            args=["/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-shopify-products/products_by_crawl.py"]
         )
     )
 )

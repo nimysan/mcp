@@ -5,7 +5,7 @@ from mcp import stdio_client, StdioServerParameters
 import logging
 
 # Configure the root strands logger
-logging.getLogger("strands").setLevel(logging.DEBUG)
+logging.getLogger("strands").setLevel(logging.INFO)
 
 # Add a handler to see the logs
 logging.basicConfig(
@@ -14,18 +14,18 @@ logging.basicConfig(
 )
 
 # 创建天气服务的 MCP 客户端
-weather_client = MCPClient(
+products_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
             command="python", 
-            args=["/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-weather/weather.py"]
+            args=["/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-jackery-product/products_by_crawl.py"]
         )
     )
 )
 
 # 这里可以添加其他 MCP 客户端
 # 例如文档服务的 MCP 客户端
-docs_client = MCPClient(
+time_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
             command="uvx", 
@@ -37,18 +37,18 @@ docs_client = MCPClient(
 def main():
     try:
         # 使用 with 语句同时管理多个客户端
-        with weather_client, docs_client:
+        with products_client, time_client:
             # 合并所有客户端的工具
             all_tools = (
-                weather_client.list_tools_sync() +
-                docs_client.list_tools_sync()
+                products_client.list_tools_sync() +
+                time_client.list_tools_sync()
             )
             
             # 创建具有所有工具的 Agent
             agent = Agent(tools=all_tools)
             
             # 使用 Agent 执行任务
-            result = agent("Tell me current time and  weather for Latitude 38.8951, Longitude -77.0364, use Chinese")
+            result = agent("Solor Generate 5000这个产品怎么样?")
             print("Agent 响应:", result)
             
             # Access metrics through the AgentResult

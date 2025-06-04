@@ -9,4 +9,5 @@ dependencies = []
 [tool.uv.workspace]
 members = [
     "src/plazared-weather",
+    "src/plazared-jackery-product",
 ]

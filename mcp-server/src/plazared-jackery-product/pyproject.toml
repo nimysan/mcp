@@ -1,14 +1,11 @@
 [project]
-name = "mcp-client"
+name = "plazared-jackery-product"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "anthropic>=0.52.1",
     "bs4>=0.0.2",
-    "mcp>=1.9.2",
-    "python-dotenv>=1.1.0",
-    "strands-agents>=0.1.6",
-    "strands-agents-tools>=0.1.4",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
 ]

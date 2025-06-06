@@ -1,5 +1,5 @@
 [project]
-name = "mcp-client"
+name = "shopify-sales-agent"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -14,4 +14,5 @@ dependencies = [
     "requests>=2.32.3",
     "strands-agents>=0.1.6",
     "strands-agents-tools>=0.1.4",
+    "plazared-shopify-products @ file:///Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products"
 ]

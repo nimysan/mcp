@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+src/producst_app_gradio.py
+src/sales_by_sdk.py
+src/shopify_sales_agent.egg-info/PKG-INFO
+src/shopify_sales_agent.egg-info/SOURCES.txt
+src/shopify_sales_agent.egg-info/dependency_links.txt
+src/shopify_sales_agent.egg-info/requires.txt
+src/shopify_sales_agent.egg-info/top_level.txt

@@ -1,0 +1,37 @@
+[build-system]
+# A list of packages that are needed to build your package:
+requires = ["setuptools"] # REQUIRED if [build-system] table is used
+# The name of the Python object that frontends will use to perform the build:
+build-backend = "setuptools.build_meta" # If not defined, then legacy behavior can happen.
+
+[project]
+name = "plazared-shopify-products"
+version = "0.1.0"
+description = "Shopify Products information MCP server"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bs4>=0.0.2",
+    "mcp>=1.9.3",
+    "pandas>=2.3.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "requests>=2.31.0",
+]
+authors = [
+  {name = "Xiaowei Ye", email = "yexw@amazon.com"}
+]
+maintainers = [
+  {name = "Xiaowei Ye", email = "yexw@amazon.com"}
+]
+
+license = "GPL-3.0-or-later"
+
+[tool.setuptools]
+packages = ["src"]
+
+[project.scripts]
+shopify-products = "src.products_by_crawl:main"
+
+[tool.uvx]
+scripts = { shopify = "src.products_by_crawl:main" }

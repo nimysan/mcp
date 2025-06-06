@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: shopify-sales-agent
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: anthropic>=0.52.1
+Requires-Dist: bs4>=0.0.2
+Requires-Dist: gradio>=5.33.0
+Requires-Dist: mcp>=1.9.2
+Requires-Dist: pandas>=2.3.0
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: requests>=2.32.3
+Requires-Dist: strands-agents>=0.1.6
+Requires-Dist: strands-agents-tools>=0.1.4
+Requires-Dist: plazared-shopify-products@ file:///Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products
+
+sample placeholder

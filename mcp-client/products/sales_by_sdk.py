@@ -23,6 +23,16 @@ products_client = MCPClient(
     )
 )
 
+# 通过firecrawl来获取
+products_client = MCPClient(
+    lambda: stdio_client(
+        StdioServerParameters(
+            command="npx", 
+            args=["/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-shopify-products/products_by_crawl.py"]
+        )
+    )
+)
+
 # 这里可以添加其他 MCP 客户端
 # 例如文档服务的 MCP 客户端
 time_client = MCPClient(

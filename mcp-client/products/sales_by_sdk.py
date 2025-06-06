@@ -44,9 +44,17 @@ time_client = MCPClient(
     )
 )
 
-def main():
+def chat(message):
+    """
+    与Agent进行对话的方法
+    
+    Args:
+        message (str): 用户输入的消息
+        
+    Returns:
+        dict: 包含回复内容和指标的字典
+    """
     try:
-        # 使用 with 语句同时管理多个客户端
         with products_client, time_client:
             # 合并所有客户端的工具
             all_tools = (
@@ -58,16 +66,32 @@ def main():
             agent = Agent(tools=all_tools)
             
             # 使用 Agent 执行任务
-            result = agent("Solor Generate 5000这个产品怎么样?")
-            print("Agent 响应:", result)
+            result = agent(message)
             
-            # Access metrics through the AgentResult
-            print(f"Total tokens: {result.metrics.accumulated_usage['totalTokens']}")
-            print(f"Execution time: {sum(result.metrics.cycle_durations):.2f} seconds")
-            print(f"Tools used: {list(result.metrics.tool_metrics.keys())}")
+            return {
+                "response": str(result),
+                "metrics": {
+                    "total_tokens": result.metrics.accumulated_usage['totalTokens'],
+                    "execution_time": sum(result.metrics.cycle_durations),
+                    "tools_used": list(result.metrics.tool_metrics.keys())
+                }
+            }
             
     except Exception as e:
-        print(f"发生错误: {str(e)}")
+        return {
+            "error": str(e),
+            "response": None,
+            "metrics": None
+        }
+
+def main():
+    # 测试chat方法
+    result = chat("Solor Generate 5000这个产品怎么样?")
+    print("Agent 响应:", result["response"])
+    if "metrics" in result and result["metrics"]:
+        print(f"Total tokens: {result['metrics']['total_tokens']}")
+        print(f"Execution time: {result['metrics']['execution_time']:.2f} seconds")
+        print(f"Tools used: {result['metrics']['tools_used']}")
 
 if __name__ == "__main__":
     main()

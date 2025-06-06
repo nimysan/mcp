@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "anthropic>=0.52.1",
     "bs4>=0.0.2",
+    "gradio>=5.33.0",
     "mcp>=1.9.2",
     "pandas>=2.3.0",
     "python-dotenv>=1.1.0",

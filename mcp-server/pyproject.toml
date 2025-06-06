@@ -10,4 +10,5 @@ dependencies = []
 members = [
     "src/plazared-weather",
     "src/plazared-jackery-product",
+    "example-pkg",
 ]

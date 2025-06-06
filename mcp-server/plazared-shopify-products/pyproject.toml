@@ -28,10 +28,11 @@ maintainers = [
 license = "GPL-3.0-or-later"
 
 [tool.setuptools]
-packages = ["src"]
+package-dir = {"" = "src"}  # 指定源代码目录为 src
+packages = ["products_repository","product_test"]
 
 [project.scripts]
-shopify-products = "src.products_by_crawl:main"
+product-mcp = "products_repository:joke"
 
 [tool.uvx]
-scripts = { shopify = "src.products_by_crawl:main" }
+scripts = { shopify-mcp = "products_repository:joke" }

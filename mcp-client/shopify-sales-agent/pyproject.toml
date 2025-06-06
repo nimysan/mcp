@@ -14,5 +14,6 @@ dependencies = [
     "requests>=2.32.3",
     "strands-agents>=0.1.6",
     "strands-agents-tools>=0.1.4",
-    "plazared-shopify-products @ file:///Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products"
+    "plazared-shopify-products @ file:///${PWD}/../../mcp-server/plazared-shopify-products",
+    "pytest>=8.4.0",
 ]

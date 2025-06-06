@@ -13,6 +13,7 @@ Requires-Dist: python-dotenv>=1.1.0
 Requires-Dist: requests>=2.32.3
 Requires-Dist: strands-agents>=0.1.6
 Requires-Dist: strands-agents-tools>=0.1.4
-Requires-Dist: plazared-shopify-products@ file:///Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products
+Requires-Dist: plazared-shopify-products@ file:///${PWD}/../../mcp-server/plazared-shopify-products
+Requires-Dist: pytest>=8.4.0
 
 sample placeholder

@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 mcp = FastMCP("jackery-products")
 
 # 常量
-PRODUCTS_CSV_PATH = "/Users/yexw/PycharmProjects/mcp/mcp-server/src/plazared-shopify-products/products.csv"
+PRODUCTS_CSV_PATH = "/Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products/src/data/products.csv"
 
 class ProductFilter:
     """产品过滤器类"""

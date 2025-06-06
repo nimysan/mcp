@@ -518,6 +518,7 @@ dependencies = [
     { name = "pandas" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "requests" },
 ]
 
 [package.metadata]
@@ -528,6 +529,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.3.0" },
     { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "requests", specifier = ">=2.31.0" },
 ]
 
 [[package]]

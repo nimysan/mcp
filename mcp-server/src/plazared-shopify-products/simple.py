@@ -47,6 +47,13 @@ def get_tags_from_product(product):
 
     return [title, description]
 
+def get_variant_attribute(variant, key, default=''):
+    """
+    安全地获取variant的属性值
+    如果属性不存在则返回默认值
+    """
+    return variant.get(key, default)
+
 def get_inventory_from_product(product_url):
     get_product = requests.get(product_url)
     product_json = get_product.json()
@@ -97,18 +104,36 @@ with open('products.csv', 'w') as f:
                 variants_df = get_inventory_from_product(product_url + '.json')
                 for _, variant in variants_df.iterrows():
                     row = [
-                        name, variant['id'], variant['product_id'], variant['title'],
-                        variant['price'], variant['sku'], variant['position'],
-                        variant['inventory_policy'], variant['compare_at_price'],
-                        variant['fulfillment_service'], variant['inventory_management'],
-                        variant['option1'], variant['option2'], variant['option3'],
-                        variant['created_at'], variant['updated_at'], variant['taxable'],
-                        variant['barcode'], variant['grams'], variant['image_id'],
-                        variant['weight'], variant['weight_unit'], variant['inventory_quantity'],
-                        variant['old_inventory_quantity'], variant['tax_code'],
-                        variant['requires_shipping'], variant['quantity_rule'],
-                        variant['price_currency'], variant['compare_at_price_currency'],
-                        variant['quantity_price_breaks'],
+                        name, 
+                        get_variant_attribute(variant, 'id'),
+                        get_variant_attribute(variant, 'product_id'),
+                        get_variant_attribute(variant, 'title'),
+                        get_variant_attribute(variant, 'price'),
+                        get_variant_attribute(variant, 'sku'),
+                        get_variant_attribute(variant, 'position'),
+                        get_variant_attribute(variant, 'inventory_policy'),
+                        get_variant_attribute(variant, 'compare_at_price'),
+                        get_variant_attribute(variant, 'fulfillment_service'),
+                        get_variant_attribute(variant, 'inventory_management'),
+                        get_variant_attribute(variant, 'option1'),
+                        get_variant_attribute(variant, 'option2'),
+                        get_variant_attribute(variant, 'option3'),
+                        get_variant_attribute(variant, 'created_at'),
+                        get_variant_attribute(variant, 'updated_at'),
+                        get_variant_attribute(variant, 'taxable'),
+                        get_variant_attribute(variant, 'barcode'),
+                        get_variant_attribute(variant, 'grams'),
+                        get_variant_attribute(variant, 'image_id'),
+                        get_variant_attribute(variant, 'weight'),
+                        get_variant_attribute(variant, 'weight_unit'),
+                        get_variant_attribute(variant, 'inventory_quantity'),
+                        get_variant_attribute(variant, 'old_inventory_quantity'),
+                        get_variant_attribute(variant, 'tax_code'),
+                        get_variant_attribute(variant, 'requires_shipping'),
+                        get_variant_attribute(variant, 'quantity_rule'),
+                        get_variant_attribute(variant, 'price_currency'),
+                        get_variant_attribute(variant, 'compare_at_price_currency'),
+                        get_variant_attribute(variant, 'quantity_price_breaks'),
                         product_url, title, description, body_description
                     ]
                     writer.writerow(row)

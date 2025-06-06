@@ -8,6 +8,7 @@ dependencies = [
     "anthropic>=0.52.1",
     "bs4>=0.0.2",
     "mcp>=1.9.2",
+    "pandas>=2.3.0",
     "python-dotenv>=1.1.0",
     "strands-agents>=0.1.6",
     "strands-agents-tools>=0.1.4",

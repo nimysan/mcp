@@ -11,4 +11,5 @@ dependencies = [
     "pandas>=2.3.0",
     "pytest>=8.4.0",
     "pytest-asyncio>=1.0.0",
+    "requests>=2.31.0",
 ]

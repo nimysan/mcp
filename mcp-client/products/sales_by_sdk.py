@@ -1,6 +1,13 @@
 from strands import Agent
 from strands.tools.mcp import MCPClient
 from mcp import stdio_client, StdioServerParameters
+from strands.agent.conversation_manager import SlidingWindowConversationManager
+
+# Create a conversation manager with custom window size
+# By default, SlidingWindowConversationManager is used even if not specified
+conversation_manager = SlidingWindowConversationManager(
+    window_size=10,  # Maximum number of message pairs to keep
+)
 
 import logging
 
@@ -63,7 +70,7 @@ def chat(message):
             )
             
             # 创建具有所有工具的 Agent
-            agent = Agent(tools=all_tools)
+            agent = Agent(conversation_manager=conversation_manager, tools=all_tools)
             
             # 使用 Agent 执行任务
             result = agent(message)

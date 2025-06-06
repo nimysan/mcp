@@ -3,6 +3,10 @@ from mcp.server.fastmcp import FastMCP
 import pandas as pd
 from decimal import Decimal
 import re
+import requests
+import os
+import json
+from datetime import datetime, timedelta
 
 # 初始化 FastMCP 服务器
 mcp = FastMCP("jackery-products")
@@ -117,6 +121,23 @@ async def search_products(min_price: Optional[float] = None,
     
     return filtered_products
 
+def get_cache_path(url: str) -> str:
+    """获取缓存文件路径"""
+    # 将URL转换为文件名安全的格式
+    cache_filename = re.sub(r'[^\w]', '_', url) + '.json'
+    cache_dir = os.path.join(os.path.dirname(__file__), 'cache')
+    os.makedirs(cache_dir, exist_ok=True)
+    return os.path.join(cache_dir, cache_filename)
+
+def is_cache_valid(cache_path: str) -> bool:
+    """检查缓存是否在TTL期限内"""
+    if not os.path.exists(cache_path):
+        return False
+    
+    # 检查文件修改时间是否在1分钟内
+    mtime = datetime.fromtimestamp(os.path.getmtime(cache_path))
+    return datetime.now() - mtime < timedelta(minutes=1)
+
 @mcp.tool()
 async def get_product_details(url: str) -> Dict[str, Any]:
     """获取指定URL的产品详情
@@ -127,22 +148,38 @@ async def get_product_details(url: str) -> Dict[str, Any]:
     Returns:
         包含产品详细信息的字典
     """
-    # 加载产品数据
-    df = load_products()
+    cache_path = get_cache_path(url)
     
-    # 查找匹配的产品
-    matches = df[df['URL'] == url]
-    if len(matches) == 0:
-        return {"error": "Product not found"}
+    # 检查缓存是否有效
+    if is_cache_valid(cache_path):
+        try:
+            with open(cache_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    
+    try:
+        # 发送HTTP请求获取页面内容
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        html_content = response.text
         
-    product = matches.iloc[0].to_dict()
-    return {
-        'name': str(product['Name']),
-        'url': str(product['URL']),
-        'meta_title': str(product['Meta Title']),
-        'meta_description': str(product['Meta Description']),
-        'description': str(product['Product Description'])
-    }
+        # 提取产品信息
+        # 这里使用简单的数据结构存储,实际使用时可能需要更复杂的解析逻辑
+        product_data = {
+            'url': url,
+            'html_content': html_content,
+            'timestamp': datetime.now().isoformat(),
+        }
+        
+        # 保存到缓存
+        with open(cache_path, 'w', encoding='utf-8') as f:
+            json.dump(product_data, f, ensure_ascii=False, indent=2)
+        
+        return product_data
+        
+    except Exception as e:
+        return {"error": f"Failed to fetch product details: {str(e)}"}
 
 if __name__ == "__main__":
     # 初始化并运行服务器

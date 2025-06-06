@@ -635,6 +635,7 @@ dependencies = [
     { name = "mcp" },
     { name = "pandas" },
     { name = "python-dotenv" },
+    { name = "requests" },
     { name = "strands-agents" },
     { name = "strands-agents-tools" },
 ]
@@ -647,6 +648,7 @@ requires-dist = [
     { name = "mcp", specifier = ">=1.9.2" },
     { name = "pandas", specifier = ">=2.3.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "requests", specifier = ">=2.32.3" },
     { name = "strands-agents", specifier = ">=0.1.6" },
     { name = "strands-agents-tools", specifier = ">=0.1.4" },
 ]

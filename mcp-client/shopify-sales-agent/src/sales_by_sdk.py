@@ -24,8 +24,8 @@ logging.basicConfig(
 products_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
-            command="uvx", 
-            args=["../../mcp-server/plazared-shopify-products"]
+            command="uv", 
+            args=["run","hellojoke"]
         )
     )
 )

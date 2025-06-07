@@ -5,7 +5,7 @@ requires = ["setuptools"] # REQUIRED if [build-system] table is used
 build-backend = "setuptools.build_meta" # If not defined, then legacy behavior can happen.
 
 [project]
-name = "plazared-shopify-products"
+name = "mcp-shopify-products"
 version = "0.2.0"
 description = "Shopify Products information MCP server"
 readme = "README.md"
@@ -32,5 +32,5 @@ package-dir = {"" = "src"}  # 指定源代码目录为 src
 packages = ["products_repository","product_test"]
 
 [project.scripts]
-product-mcp = "products_repository:joke"
+mcp-shopify-products = "products_repository:joke"
 

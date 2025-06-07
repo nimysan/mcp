@@ -6,13 +6,23 @@ import re
 import requests
 import os
 import json
+import logging
 from datetime import datetime, timedelta
+from .shopify_crawler import ShopifyCrawler
+
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # 初始化 FastMCP 服务器
 mcp = FastMCP("jackery-products")
 
 # 常量
-PRODUCTS_CSV_PATH = "/Users/yexw/PycharmProjects/mcp/mcp-server/plazared-shopify-products/src/data/products.csv"
+PRODUCTS_CSV_PATH = "/Users/yexw/PycharmProjects/mcp/mcp-server/mcp-shopify-products/src/data/products.csv"
 
 class ProductFilter:
     """产品过滤器类"""
@@ -106,6 +116,7 @@ async def search_products(min_price: Optional[float] = None,
     )
     
     # 加载产品数据
+    logger.info(f"搜索产品 - 价格范围: {min_price}-{max_price}, 类别: {category}, 场景: {scenario}")
     df = load_products()
     
     # 应用过滤器
@@ -119,6 +130,7 @@ async def search_products(min_price: Optional[float] = None,
                 'description': str(product['Product Description'])
             })
     
+    logger.info(f"找到 {len(filtered_products)} 个匹配的产品")
     return filtered_products
 
 def get_cache_path(url: str) -> str:
@@ -148,12 +160,14 @@ async def get_product_details(url: str) -> Dict[str, Any]:
     Returns:
         包含产品详细信息的字典
     """
+    logger.info(f"获取产品详情: {url}")
     cache_path = get_cache_path(url)
     
     # 检查缓存是否有效
     if is_cache_valid(cache_path):
         try:
             with open(cache_path, 'r', encoding='utf-8') as f:
+                logger.info(f"使用缓存数据: {cache_path}")
                 return json.load(f)
         except:
             pass
@@ -174,12 +188,53 @@ async def get_product_details(url: str) -> Dict[str, Any]:
         
         # 保存到缓存
         with open(cache_path, 'w', encoding='utf-8') as f:
+            logger.info(f"保存数据到缓存: {cache_path}")
             json.dump(product_data, f, ensure_ascii=False, indent=2)
         
         return product_data
         
     except Exception as e:
-        return {"error": f"Failed to fetch product details: {str(e)}"}
+        error_msg = f"获取产品详情失败: {str(e)}"
+        logger.error(error_msg)
+        return {"error": error_msg}
+
+@mcp.tool()
+async def crawl_all_products(website_url: str, with_variants: bool = False) -> Dict[str, Any]:
+    """重新爬取所有产品数据
+    
+    Args:
+        website_url: Shopify 商店的URL (https://shopifystore.com)
+        with_variants: 是否爬取产品变体数据
+    
+    Returns:
+        包含爬取结果信息的字典
+    """
+    try:
+        logger.info(f"开始爬取商店 {website_url} 的产品数据")
+        
+        # 创建爬虫实例
+        crawler = ShopifyCrawler(
+            website_url=website_url,
+            output_path=PRODUCTS_CSV_PATH,
+            with_variants=with_variants
+        )
+        
+        # 开始爬取
+        crawler.crawl()
+        
+        return {
+            "status": "success",
+            "message": f"产品数据已成功爬取并保存到 {PRODUCTS_CSV_PATH}",
+            "output_path": PRODUCTS_CSV_PATH
+        }
+        
+    except Exception as e:
+        error_msg = f"爬取产品数据失败: {str(e)}"
+        logger.error(error_msg)
+        return {
+            "status": "error",
+            "message": error_msg
+        }
 
 if __name__ == "__main__":
     # 初始化并运行服务器

@@ -1,7 +1,7 @@
 import logging
-from strands import Agent
-from strands.tools.mcp import MCPClient
-from mcp import stdio_client, StdioServerParameters
+import asyncio
+import json
+from products_repository.shopify_products import search_products, ProductFilter
 
 # Configure the root strands logger
 logging.getLogger("strands").setLevel(logging.INFO)
@@ -12,14 +12,15 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]
 )
 
-# Shopify products agents
-products_client = MCPClient(
-    lambda: stdio_client(
-        StdioServerParameters(
-            command="uv", 
-            args=["run","hellojoke"]
-        )
+async def main():
+    results = await search_products(
+        description="",
+        min_price="0",
+        max_price="1000",
+        category="",
+        scenario="camping"
     )
-)
+    print(json.dumps(results, indent=4))
 
-print(products_client.list_tools_sync())
+if __name__ == "__main__":
+    asyncio.run(main())

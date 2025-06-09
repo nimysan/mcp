@@ -12,7 +12,7 @@ conversation_manager = SlidingWindowConversationManager(
 import logging
 
 # Configure the root strands logger
-logging.getLogger("strands").setLevel(logging.INFO)
+logging.getLogger("strands").setLevel(logging.DEBUG)
 
 # Add a handler to see the logs
 logging.basicConfig(

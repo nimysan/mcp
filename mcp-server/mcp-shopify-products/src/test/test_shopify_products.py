@@ -82,3 +82,20 @@ async def test_search_products_with_multiple_filters(sample_products_df):
         )
         assert len(results) == 1
         assert "Power Station" in results[0]['name']
+
+@pytest.mark.asyncio
+async def test_search_products_with_camping_scenario(sample_products_df):
+    """测试search_products函数的camping场景搜索功能"""
+    with patch('products_repository.shopify_products.load_products', return_value=sample_products_df):
+        # 测试空描述和价格范围及场景组合
+        results = await search_products(
+            description="",
+            min_price="0",
+            max_price="1000",
+            category="",
+            scenario="camping"
+        )
+        print(results)
+        assert len(results) == 1
+        assert "Solar Generator" in results[0]['name']
+        assert "camping" in results[0]['description'].lower()

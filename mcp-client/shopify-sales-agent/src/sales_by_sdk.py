@@ -30,6 +30,8 @@ products_client = MCPClient(
     )
 )
 
+# logging.info(products_client.list_tools_sync())
+
 # 这里可以添加其他 MCP 客户端
 # 例如文档服务的 MCP 客户端
 time_client = MCPClient(
@@ -58,6 +60,8 @@ def chat(message):
                 products_client.list_tools_sync() +
                 time_client.list_tools_sync()
             )
+            
+            logging.debug(all_tools)
             
             # 创建具有所有工具的 Agent
             agent = Agent(conversation_manager=conversation_manager, tools=all_tools)

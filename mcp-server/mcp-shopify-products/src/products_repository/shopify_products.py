@@ -30,11 +30,13 @@ class ProductFilter:
                  min_price: Optional[float] = None,
                  max_price: Optional[float] = None,
                  category: Optional[str] = None,
-                 scenario: Optional[str] = None):
+                 scenario: Optional[str] = None,
+                 description: Optional[str] = None):
         self.min_price = min_price
         self.max_price = max_price
         self.category = category
         self.scenario = scenario
+        self.description = description
 
     def match_price(self, description: str) -> bool:
         """检查价格是否在范围内"""
@@ -73,12 +75,21 @@ class ProductFilter:
         scenario_lower = self.scenario.lower()
         return scenario_lower in str(description).lower()
 
+    def match_description(self, description: str) -> bool:
+        """检查产品描述是否匹配搜索关键词"""
+        if not self.description:
+            return True
+            
+        description_lower = self.description.lower()
+        return description_lower in str(description).lower()
+
     def match_product(self, product: Dict[str, Any]) -> bool:
         """检查产品是否满足所有过滤条件"""
-        return (self.match_price(product.get('Product Description', '')) and
-                self.match_category(product.get('Name', ''), 
-                                  product.get('Product Description', '')) and
-                self.match_scenario(product.get('Product Description', '')))
+        product_description = product.get('Product Description', '')
+        return (self.match_price(product_description) and
+                self.match_category(product.get('Name', ''), product_description) and
+                self.match_scenario(product_description) and
+                self.match_description(product_description))
 
 def load_products() -> pd.DataFrame:
     """加载产品数据"""
@@ -95,7 +106,8 @@ def load_products() -> pd.DataFrame:
 async def search_products(min_price: Optional[float] = None,
                         max_price: Optional[float] = None,
                         category: Optional[str] = None,
-                        scenario: Optional[str] = None) -> List[Dict[str, Any]]:
+                        scenario: Optional[str] = None,
+                        description: Optional[str] = None) -> List[Dict[str, Any]]:
     """搜索产品
     
     Args:
@@ -103,6 +115,7 @@ async def search_products(min_price: Optional[float] = None,
         max_price: 最高价格
         category: 产品类别 (如 "Solar Generator", "Battery Pack" 等)
         scenario: 使用场景 (如 "camping", "home backup" 等)
+        description: 产品描述关键词 (可选)
     
     Returns:
         满足条件的产品列表
@@ -112,11 +125,12 @@ async def search_products(min_price: Optional[float] = None,
         min_price=min_price,
         max_price=max_price,
         category=category,
-        scenario=scenario
+        scenario=scenario,
+        description=description
     )
     
     # 加载产品数据
-    logger.info(f"搜索产品 - 价格范围: {min_price}-{max_price}, 类别: {category}, 场景: {scenario}")
+    logger.info(f"搜索产品 - 价格范围: {min_price}-{max_price}, 类别: {category}, 场景: {scenario}, 描述关键词: {description}")
     df = load_products()
     
     # 应用过滤器

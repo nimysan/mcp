@@ -244,6 +244,29 @@ wheels = [
 ]
 
 [[package]]
+name = "mcp-shopify-products"
+version = "0.2.0"
+source = { editable = "." }
+dependencies = [
+    { name = "bs4" },
+    { name = "mcp" },
+    { name = "pandas" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "bs4", specifier = ">=0.0.2" },
+    { name = "mcp", specifier = ">=1.9.3" },
+    { name = "pandas", specifier = ">=2.3.0" },
+    { name = "pytest", specifier = ">=8.4.0" },
+    { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "requests", specifier = ">=2.31.0" },
+]
+
+[[package]]
 name = "numpy"
 version = "2.2.6"
 source = { registry = "https://pypi.org/simple" }
@@ -360,29 +383,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/15/aa/3fc3181d12b95da71f5c2537c3e3b3af6ab3a8c392ab41ebb766e0929bc6/pandas-2.3.0-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1a881bc1309f3fce34696d07b00f13335c41f5f5a8770a33b09ebe23261cfc67", size = 11966182, upload-time = "2025-06-05T03:27:47.652Z" },
     { url = "https://files.pythonhosted.org/packages/37/e7/e12f2d9b0a2c4a2cc86e2aabff7ccfd24f03e597d770abfa2acd313ee46b/pandas-2.3.0-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:e1991bbb96f4050b09b5f811253c4f3cf05ee89a589379aa36cd623f21a31d6f", size = 12547686, upload-time = "2025-06-06T00:00:26.142Z" },
     { url = "https://files.pythonhosted.org/packages/39/c2/646d2e93e0af70f4e5359d870a63584dacbc324b54d73e6b3267920ff117/pandas-2.3.0-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:bb3be958022198531eb7ec2008cfc78c5b1eed51af8600c6c5d9160d89d8d249", size = 13231847, upload-time = "2025-06-05T03:27:51.465Z" },
-]
-
-[[package]]
-name = "plazared-shopify-products"
-version = "0.2.0"
-source = { editable = "." }
-dependencies = [
-    { name = "bs4" },
-    { name = "mcp" },
-    { name = "pandas" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "bs4", specifier = ">=0.0.2" },
-    { name = "mcp", specifier = ">=1.9.3" },
-    { name = "pandas", specifier = ">=2.3.0" },
-    { name = "pytest", specifier = ">=8.4.0" },
-    { name = "pytest-asyncio", specifier = ">=1.0.0" },
-    { name = "requests", specifier = ">=2.31.0" },
 ]
 
 [[package]]

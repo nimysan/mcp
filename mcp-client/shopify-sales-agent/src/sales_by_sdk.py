@@ -3,13 +3,15 @@ from strands.tools.mcp import MCPClient
 from mcp import stdio_client, StdioServerParameters
 from strands.agent.conversation_manager import SlidingWindowConversationManager
 
+
+import logging
+from strands.models import BedrockModel
+
 # Create a conversation manager with custom window size
 # By default, SlidingWindowConversationManager is used even if not specified
 conversation_manager = SlidingWindowConversationManager(
     window_size=10,  # Maximum number of message pairs to keep
 )
-
-import logging
 
 # Configure the root strands logger
 logging.getLogger("strands").setLevel(logging.DEBUG)
@@ -25,7 +27,7 @@ products_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
             command="uv", 
-            args=["run","hellojoke"]
+            args=["run","mcp-shopify-products"]
         )
     )
 )
@@ -62,7 +64,12 @@ def chat(message):
             )
             
             logging.debug(all_tools)
-            
+            # Create a Bedrock model instance
+            bedrock_model = BedrockModel(
+                model_id="us.amazon.nova-premier-v1:0",
+                temperature=0.3,
+                top_p=0.8,
+            )
             # 创建具有所有工具的 Agent
             agent = Agent(conversation_manager=conversation_manager, tools=all_tools)
             

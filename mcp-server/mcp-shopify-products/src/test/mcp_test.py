@@ -16,7 +16,7 @@ async def main():
     results = await search_products(
         description="",
         min_price="0",
-        max_price="1000",
+        max_price="400",
         category="",
         scenario="camping"
     )

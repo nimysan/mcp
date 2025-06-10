@@ -1,5 +1,4 @@
-sample placeholder
-
+# How to run it?
 
 ## how to use uvx to run
 

@@ -1,129 +1,136 @@
-# MCP 天气服务示例项目
+# MCP 多功能服务项目
 
-这个项目展示了如何使用 Model Context Protocol (MCP) 来构建和使用天气服务，同时演示了如何通过 Amazon Bedrock Agent 和 Strand Agent SDK 两种不同的方式来调用 MCP 客户端。项目使用 uv 作为包管理工具。
+这个项目是一个基于Model Context Protocol (MCP)的多功能服务集合，包含天气服务和Shopify商品管理服务。项目使用uv作为包管理工具。
 
 ## 项目结构
 
 ```
 .
-├── mcp-client/                 # MCP 客户端实现
-│   ├── bedrock_mcp_client.py  # Amazon Bedrock Agent 集成
-│   ├── strand_sdk_mcp_client.py# Strand Agent SDK 集成
-│   └── pyproject.toml         # 客户端依赖配置
-├── mcp-server/                 # MCP 服务器实现
-│   ├── src/
-│   │   └── plazared-weather/  # 天气服务实现
-│   │       ├── weather.py     # 天气服务核心逻辑
-│   │       └── pyproject.toml # 天气服务依赖配置
-│   └── pyproject.toml         # 服务器依赖配置
+├── mcp-client/                          # MCP 客户端实现
+│   ├── sample-agents/                   # 示例代理实现
+│   │   ├── bedrock_mcp_client.py       # Amazon Bedrock Agent 集成
+│   │   └── strand_sdk_mcp_client.py    # Strand Agent SDK 集成
+│   ├── shopify-sales-agent/            # Shopify销售代理实现
+│   │   ├── src/
+│   │   │   ├── sales_agents.py         # 销售代理核心逻辑
+│   │   │   └── producst_app_gradio.py  # Gradio界面实现
+│   │   └── pyproject.toml              # 项目依赖配置
+│   └── pyproject.toml                  # 客户端依赖配置
+├── mcp-server/                         # MCP 服务器实现
+│   ├── mcp-shopify-products/           # Shopify商品服务
+│   │   ├── src/
+│   │   │   └── products_repository/    # 商品仓库实现
+│   │   └── pyproject.toml             # 项目依赖配置
+│   ├── plazared-weather/              # 天气服务实现
+│   │   ├── weather.py                 # 天气服务核心逻辑
+│   │   └── pyproject.toml            # 项目依赖配置
+│   └── pyproject.toml                 # 服务器依赖配置
 ```
 
 ## 功能特性
 
-### MCP 服务器 (Weather Service)
+### 1. Shopify商品服务
 
-- 提供两个主要 API 端点：
+- **商品管理功能**
+  - 商品信息抓取和管理
+  - 销售代理系统
+  - Gradio交互界面
+
+### 2. 天气服务
+
+- **天气信息查询**
   - `get_alerts`: 获取指定美国州的天气预警信息
   - `get_forecast`: 获取指定经纬度位置的天气预报信息
-- 使用 National Weather Service (NWS) API 作为数据源
-- 支持标准的 MCP 协议通信
+  - 使用National Weather Service (NWS) API作为数据源
 
-### MCP 客户端
+### MCP 客户端集成
 
-提供两种不同的集成方式：
+提供多种集成方式：
 
-1. **Amazon Bedrock Agent 集成** (bedrock_mcp_client.py)
-   - 使用 Amazon Bedrock Runtime 服务
-   - 支持与 Claude 3 模型的对话
-   - 实现了完整的工具调用生命周期
-   - 支持异步操作
+1. **Amazon Bedrock Agent集成**
+   - 使用Amazon Bedrock Runtime服务
+   - 支持与Claude 3模型的对话
+   - 实现完整的工具调用生命周期
 
-2. **Strand Agent SDK 集成** (strand_sdk_mcp_client.py)
-   - 使用 Strand Agent SDK 进行简化的集成
-   - 提供更简洁的 API 调用方式
-   - 支持同步操作
+2. **Strand Agent SDK集成**
+   - 使用Strand Agent SDK进行简化集成
+   - 提供简洁的API调用方式
+
+3. **Shopify销售代理**
+   - 基于Gradio的交互式界面
+   - 智能销售代理功能
 
 ## 依赖要求
 
-### MCP 客户端
 - Python >= 3.12
-- anthropic >= 0.52.1
-- mcp >= 1.9.2
-- python-dotenv >= 1.1.0
-
-### 天气服务
-- Python >= 3.12
-- httpx >= 0.28.1
-- mcp >= 1.9.2
+- 核心依赖：
+  - mcp >= 1.9.2
+  - anthropic >= 0.52.1
+  - httpx >= 0.28.1
+  - gradio (用于Shopify销售代理界面)
+  - python-dotenv >= 1.1.0
 
 ## 安装说明
 
-1. 克隆项目后，使用 uv 安装依赖：
+使用uv安装各个模块的依赖：
 
 ```bash
-# 安装 MCP 客户端依赖
+# 安装MCP客户端依赖
 cd mcp-client
 uv pip install -e .
 
+# 安装Shopify销售代理依赖
+cd shopify-sales-agent
+uv pip install -e .
+
+# 安装Shopify商品服务依赖
+cd ../../mcp-server/mcp-shopify-products
+uv pip install -e .
+
 # 安装天气服务依赖
-cd ../mcp-server/src/plazared-weather
+cd ../plazared-weather
 uv pip install -e .
 ```
 
 ## 使用方法
 
+### 启动Shopify销售代理
+
+```bash
+cd mcp-client/shopify-sales-agent/src
+python producst_app_gradio.py
+```
+
 ### 启动天气服务
 
 ```bash
-cd mcp-server/src/plazared-weather
+cd mcp-server/plazared-weather
 python weather.py
 ```
 
-### 使用 Bedrock Agent 客户端
+### 配置Bedrock Agent客户端
 
 1. 设置环境变量：
-   - 创建 `.env` 文件并配置：
-     ```
-     AWS_REGION=us-east-1
-     BEDROCK_MODEL_ID=/anthropic.claude-3-5-sonnet-20241022-v2:0:200k
-     ```
+   ```
+   AWS_REGION=us-east-1
+   BEDROCK_MODEL_ID=/anthropic.claude-3-5-sonnet-20241022-v2:0:200k
+   ```
 
 2. 运行客户端：
-```bash
-cd mcp-client
-python bedrock_mcp_client.py
-```
-
-### 使用 Strand Agent SDK 客户端
-
-```bash
-cd mcp-client
-python strand_sdk_mcp_client.py
-```
-
-## 示例查询
-
-1. 获取天气预报：
-```python
-# 使用经纬度获取天气预报
-"Tell me about weather for Latitude 38.8951, Longitude -77.0364"
-```
-
-2. 获取天气预警：
-```python
-# 获取特定州的天气预警
-"What are the current weather alerts for CA?"
-```
+   ```bash
+   cd mcp-client/sample-agents
+   python bedrock_mcp_client.py
+   ```
 
 ## 技术说明
 
-- 项目使用 FastMCP 框架实现 MCP 服务器
-- 使用 httpx 进行异步 HTTP 请求
-- 实现了完整的错误处理和超时机制
-- 支持标准的 JSON 响应格式
+- 使用FastMCP框架实现MCP服务器
+- 实现完整的错误处理和超时机制
+- 支持标准的JSON响应格式
+- 集成Gradio实现交互式界面
 
 ## 注意事项
 
-- 确保已正确配置 AWS 凭证以使用 Bedrock 服务
-- 天气数据来自 National Weather Service API，仅支持美国地区的天气信息
-- 所有 API 调用都有适当的超时处理机制
+- 确保正确配置AWS凭证以使用Bedrock服务
+- 天气数据仅支持美国地区信息
+- 所有API调用都有适当的超时处理机制

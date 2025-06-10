@@ -84,6 +84,47 @@ async def test_search_products_with_multiple_filters(sample_products_df):
         assert "Power Station" in results[0]['name']
 
 @pytest.mark.asyncio
+async def test_get_all_products(sample_products_df):
+    """测试get_all_products函数的功能"""
+    with patch('products_repository.shopify_products.load_products', return_value=sample_products_df):
+        # 导入get_all_products函数
+        from products_repository.shopify_products import get_all_products
+        
+        # 获取所有产品
+        results = await get_all_products()
+        
+        # 验证返回的产品数量
+        assert len(results) == 3
+        
+        # 验证每个产品的数据结构和内容
+        for product in results:
+            # 检查必要字段是否存在
+            assert 'name' in product
+            assert 'url' in product
+            assert 'description' in product
+            assert 'price' in product
+            assert 'category' in product
+            
+            # 验证价格提取
+            assert isinstance(product['price'], (float, type(None)))
+            if product['price'] is not None:
+                assert product['price'] > 0
+            
+            # 验证类别识别
+            assert product['category'] in ['Solar Generator', 'Battery Pack', None]
+            
+            # 验证具体产品数据
+            if 'Solar Generator' in product['name']:
+                assert product['price'] == 999.99
+                assert product['category'] == 'Solar Generator'
+            elif 'Battery Pack' in product['name']:
+                assert product['price'] == 499.99
+                assert product['category'] == 'Battery Pack'
+            elif 'Power Station' in product['name']:
+                assert product['price'] == 1999.99
+                assert product['category'] == 'Battery Pack'
+
+@pytest.mark.asyncio
 async def test_search_products_with_camping_scenario(sample_products_df):
     """测试search_products函数的camping场景搜索功能"""
     with patch('products_repository.shopify_products.load_products', return_value=sample_products_df):

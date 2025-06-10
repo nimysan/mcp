@@ -16,6 +16,7 @@ dependencies = [
     "strands-agents-tools>=0.1.4",
     "pytest>=8.4.0",
     "mcp-server-time>=0.6.2",
+    "mcp-shopify-products",
 ]
 
 [tool.uv.sources]

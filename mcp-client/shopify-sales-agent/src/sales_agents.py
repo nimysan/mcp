@@ -66,18 +66,31 @@ def chat(message):
             logging.debug(all_tools)
             # Create a Bedrock model instance
             bedrock_model = BedrockModel(
-                model_id="us.amazon.nova-premier-v1:0",
+                model_id="anthropic.claude-3-5-sonnet-20240620-v1:0",
                 temperature=0.3,
                 top_p=0.8,
             )
-            # 创建具有所有工具的 Agent
-            agent = Agent(conversation_manager=conversation_manager, tools=all_tools)
+            # 创建具有所有工具的 Agent 
+            agent = Agent(
+                model=bedrock_model, 
+                conversation_manager=conversation_manager, 
+                tools=all_tools,
+                system_prompt=(
+                    """
+                        你是一个Jackery导购专家，回答客户关于Jackery产品的问题.
+                        1. 优先使用 get_all_products工具，从然后根据这个工具返回的数据中寻找合适客户的推荐
+                        2. 当落地到具体哪一款产品的时候， 使用get_product_details确认（价格、规格、优惠卷信息）
+                        3. 回复给客户的内容尽量都带购买链接
+                        4. 不要啰嗦，以说清楚意思为准
+                    """
+                ))
             
             # 使用 Agent 执行任务
             result = agent(message)
             
             return {
                 "response": str(result),
+                "messages": agent.messages,
                 "metrics": {
                     "total_tokens": result.metrics.accumulated_usage['totalTokens'],
                     "execution_time": sum(result.metrics.cycle_durations),

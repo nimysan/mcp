@@ -1,5 +1,5 @@
 import gradio as gr
-from sales_by_sdk import chat
+from sales_agents import chat
 
 def process_message(message, history):
     """
@@ -11,7 +11,7 @@ def process_message(message, history):
     # 如果发生错误
     if result.get("error"):
         error_msg = f"发生错误: {result['error']}"
-        return [], error_msg, "N/A", "N/A", "N/A"
+        return [], error_msg, "N/A", "N/A", "N/A", "N/A"
     
     # 获取响应和指标
     response = result["response"]
@@ -28,7 +28,27 @@ def process_message(message, history):
         time = "N/A"
         tools = "N/A"
     
-    return history, None, tokens, time, tools
+    # 提取并格式化messages
+    messages_list = result.get("messages", [])
+    formatted_messages = ""
+    for msg in messages_list:
+        role = msg.get("role", "")
+        content = msg.get("content", [])
+        formatted_messages += f"\n[{role}]\n"
+        for item in content:
+            if "text" in item:
+                formatted_messages += f"Text: {item['text']}\n"
+            elif "toolUse" in item:
+                tool = item["toolUse"]
+                formatted_messages += f"Tool: {tool.get('name', '')}\n"
+            elif "toolResult" in item:
+                tool_result = item["toolResult"]
+                formatted_messages += f"Result: {tool_result.get('status', '')}\n"
+        formatted_messages += "-" * 50 + "\n"
+    
+    messages = formatted_messages if formatted_messages else "N/A"
+    
+    return history, None, tokens, time, tools, messages
 
 # 创建Gradio界面
 with gr.Blocks(
@@ -63,6 +83,16 @@ with gr.Blocks(
             with gr.Column(scale=2, min_width=200):
                 tools_label = gr.Markdown("### 使用的工具")
                 tools_value = gr.Textbox(value="N/A", interactive=False, elem_classes="metric-box")
+            
+        with gr.Row():
+            messages_label = gr.Markdown("### Agent Messages")
+            messages_value = gr.Textbox(
+                value="N/A", 
+                interactive=False,
+                elem_classes="metric-box",
+                lines=15,
+                max_lines=30
+            )
         
         chatbot = gr.Chatbot(
             label="对话历史",
@@ -88,7 +118,7 @@ with gr.Blocks(
         msg.submit(
             fn=process_message,
             inputs=[msg, chatbot],
-            outputs=[chatbot, msg, token_value, time_value, tools_value],
+            outputs=[chatbot, msg, token_value, time_value, tools_value, messages_value],
             show_progress=True
         )
 

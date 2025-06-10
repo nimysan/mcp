@@ -10,5 +10,6 @@ uvx -v --no-index --with mcp-server-time mcp-server-time --local-timezone=Americ
 ## Run ui
 
 ```bash
+uv add ../../mcp-server/mcp-shopify-products
 uv run src/producst_app_gradio.py
 ```

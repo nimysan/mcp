@@ -23,6 +23,11 @@ mcp = FastMCP("jackery-products")
 
 # 常量
 PRODUCTS_CSV_PATH = "/Users/yexw/PycharmProjects/mcp/mcp-server/mcp-shopify-products/src/data/products.csv"
+CACHE_TTL_MINUTES = 5
+
+# 内存缓存
+_products_cache = None
+_cache_timestamp = None
 
 class ProductFilter:
     """产品过滤器类"""
@@ -92,15 +97,29 @@ class ProductFilter:
                 self.match_description(product_description))
 
 def load_products() -> pd.DataFrame:
-    """加载产品数据"""
-    # 确保字符串列不会被转换为float
-    return pd.read_csv(PRODUCTS_CSV_PATH, dtype={
+    """加载产品数据，使用内存缓存（缓存时间5分钟）"""
+    global _products_cache, _cache_timestamp
+    
+    current_time = datetime.now()
+    
+    # 检查缓存是否有效
+    if (_products_cache is not None and _cache_timestamp is not None and
+        current_time - _cache_timestamp < timedelta(minutes=CACHE_TTL_MINUTES)):
+        logger.info("使用内存缓存的产品数据")
+        return _products_cache
+    
+    # 缓存无效或不存在，重新加载数据
+    logger.info("从文件加载产品数据")
+    _products_cache = pd.read_csv(PRODUCTS_CSV_PATH, dtype={
         'Name': str,
         'URL': str,
         'Meta Title': str,
         'Meta Description': str,
         'Product Description': str
     })
+    _cache_timestamp = current_time
+    
+    return _products_cache
 
 @mcp.tool()
 async def search_products(min_price: Optional[float] = None,
@@ -211,6 +230,50 @@ async def get_product_details(url: str) -> Dict[str, Any]:
         error_msg = f"获取产品详情失败: {str(e)}"
         logger.error(error_msg)
         return {"error": error_msg}
+
+@mcp.tool()
+async def get_all_products() -> List[Dict[str, Any]]:
+    """获取所有产品数据
+    
+    Returns:
+        所有产品的列表，每个产品包含名称、URL、描述、价格和类别信息
+    """
+    logger.info("获取所有产品数据")
+    df = load_products()
+    
+    products = []
+    for _, row in df.iterrows():
+        description = str(row['Product Description'])
+        
+        # 提取价格
+        price = None
+        price_match = re.search(r'\$(\d+(?:,\d{3})*(?:\.\d{2})?)', description)
+        if price_match:
+            try:
+                price = float(price_match.group(1).replace(',', ''))
+            except:
+                pass
+        
+        # 从名称中提取类别
+        name = str(row['Name'])
+        category = None
+        if "Solar Generator" in name:
+            category = "Solar Generator"
+        elif "Battery Pack" in name or "Power Station" in name:
+            category = "Battery Pack"
+        elif "Solar Panel" in name:
+            category = "Solar Panel"
+        
+        products.append({
+            'name': name,
+            'url': str(row['URL']),
+            'description': description,
+            'price': price,
+            'category': category
+        })
+    
+    logger.info(f"总共返回 {len(products)} 个产品")
+    return products
 
 @mcp.tool()
 async def crawl_all_products(website_url: str, with_variants: bool = False) -> Dict[str, Any]:

@@ -1,6 +1,8 @@
 import gradio as gr
 from sales_agents import chat
 
+
+
 def process_message(message, history):
     """
     处理用户消息并返回响应和指标
@@ -28,44 +30,16 @@ def process_message(message, history):
         time = "N/A"
         tools = "N/A"
     
-    # 提取并格式化messages
+    # 提取并格式化messages为表格数据
     messages_list = result.get("messages", [])
-    formatted_messages = ""
-    for msg in messages_list:
-        role = msg.get("role", "")
-        content = msg.get("content", [])
-        formatted_messages += f"\n[{role}]\n"
-        for item in content:
-            if "text" in item:
-                formatted_messages += f"Text: {item['text']}\n"
-            elif "toolUse" in item:
-                tool = item["toolUse"]
-                formatted_messages += f"Tool: {tool.get('name', '')}\n"
-            elif "toolResult" in item:
-                tool_result = item["toolResult"]
-                formatted_messages += f"Result: {tool_result.get('status', '')}\n"
-        formatted_messages += "-" * 50 + "\n"
+    for mes in messages_list:
+        print(mes)
     
-    messages = formatted_messages if formatted_messages else "N/A"
-    
-    return history, None, tokens, time, tools, messages
+    return history, None, tokens, time, tools, messages_list
 
 # 创建Gradio界面
 with gr.Blocks(
-    title="商品查询助手",
-    theme=gr.themes.Soft(
-        primary_hue="blue",
-        secondary_hue="indigo",
-    ),
-    css="""
-    #chat-container { height: 85vh !important; }
-    #metrics-container { height: 15vh !important; background-color: #f5f5f5; padding: 10px; }
-    .contain { height: 85vh !important; }
-    footer { display: none !important; }
-    .metric-box { background-color: white; padding: 10px; border-radius: 8px; margin: 5px; }
-    .message-wrap { max-height: 600px !important; }
-    .chat-wrap { height: 600px !important; }
-    """
+    title="商品查询助手"
 ) as demo:
     with gr.Column(elem_id="chat-container"):
         # gr.Markdown(
@@ -85,14 +59,17 @@ with gr.Blocks(
                 tools_value = gr.Textbox(value="N/A", interactive=False, elem_classes="metric-box")
             
         with gr.Row():
-            messages_label = gr.Markdown("### Agent Messages")
-            messages_value = gr.Textbox(
-                value="N/A", 
-                interactive=False,
-                elem_classes="metric-box",
-                lines=15,
-                max_lines=30
-            )
+            # import pandas as pd 
+            # df = pd.DataFrame({
+            #     "A" : [14, 4, 5, 4, 1], 
+            #     "B" : [5, 2, 54, 3, 2], 
+            #     "C" : [20, 20, 7, 3, 8], 
+            #     "D" : [14, 3, 6, 2, 6], 
+            #     "E" : [23, 45, 64, 32, 23]
+            # }) 
+            # gr.DataFrame(df,interactive=False,wrap=True)
+            # messages_label = gr.Markdown("### Agent Messages")
+            messages_value = gr.Dataframe()
         
         chatbot = gr.Chatbot(
             label="对话历史",
@@ -109,7 +86,8 @@ with gr.Blocks(
             examples=[
                 "Solar Generate 5000这个产品怎么样？",
                 "有什么太阳能发电机推荐吗？",
-                "这个产品的价格是多少？"
+                "这个产品的价格是多少？",
+                "现在几点？"
             ],
             inputs=msg
         )

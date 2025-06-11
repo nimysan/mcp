@@ -26,8 +26,8 @@ logging.basicConfig(
 products_client = MCPClient(
     lambda: stdio_client(
         StdioServerParameters(
-            command="uv", 
-            args=["run","mcp-shopify-products"]
+            command="uvx", 
+            args=["awslabs.aws-documentation-mcp-server@latest"]
         )
     )
 )
@@ -101,11 +101,7 @@ def chat(message):
                 tools=all_tools,
                 system_prompt=(
                     """
-                        你是一个Jackery导购专家，回答客户关于Jackery产品的问题.
-                        1. 优先使用 get_all_products工具，从然后根据这个工具返回的数据中寻找合适客户的推荐
-                        2. 当落地到具体哪一款产品的时候， 使用get_product_details确认（价格、规格、优惠卷信息）
-                        3. 回复给客户的内容尽量都带购买链接
-                        4. 不要啰嗦，以说清楚意思为准
+                        你是一个AWS SA, 负责恢复客户关于AWS 服务的一些问题。 请严格按照AWS官方文档来回答问题。 回答问题的时候请遵照。内容/链接 这样的格式。
                     """
                 ))
             
@@ -132,7 +128,7 @@ def chat(message):
 
 def main():
     # 测试chat方法
-    result = chat("Solor Generate 5000这个产品怎么样?")
+    result = chat("RDS Proxy支持蓝绿部署吗？")
     print("Agent 响应:", result["response"])
     if "metrics" in result and result["metrics"]:
         print(f"Total tokens: {result['metrics']['total_tokens']}")

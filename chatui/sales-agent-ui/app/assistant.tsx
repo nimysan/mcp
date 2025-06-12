@@ -9,7 +9,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
+// import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 import { Heading1 } from "lucide-react";
 
 const AssistantDialog: FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -33,7 +33,7 @@ export const Assistant = () => {
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <AssistantDialog>
-        <Heading1>Helllo</Heading1>
+        <Heading1>Shopify Guide</Heading1>
         <Thread />
       </AssistantDialog>
       <SidebarProvider>
@@ -61,7 +61,7 @@ export const Assistant = () => {
           
 
           <Thread />
-          <AssistantModal />
+          {/* <AssistantModal /> */}
         </SidebarInset>
       </SidebarProvider>
     </AssistantRuntimeProvider>

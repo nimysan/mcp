@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
+import { ProductLinkGrid } from "../product-link-grid";
 
 export const Thread: FC = () => {
   return (
@@ -208,6 +209,14 @@ const AssistantMessage: FC = () => {
         <MessagePrimitive.Content components={{ Text: MarkdownText }} />
         <MessageError />
       </div>
+        <ProductLinkGrid
+            items={[
+              { url: "https://www.jackery.com/products/explorer-1500-portable-power-station-refurbished", isRecommended: true },
+              { url: "https://www.jackery.com/products/jackery-solar-generator-2000-plus-kit-6kwh" },
+              // ... 更多产品
+            ]}
+          />
+    
 
       <AssistantActionBar />
 

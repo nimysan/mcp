@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 import { Heading1 } from "lucide-react";
-import { ProductLink } from "@/components/product-link";
 
 const AssistantDialog: FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -59,10 +58,8 @@ export const Assistant = () => {
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <ProductLink url="https://www.jackery.com/products/jackery-solar-generator-homepower-3000?variant=41685843738711" />
-
-          <ProductLink url="https://www.jackery.com/products/explorer-1500-portable-power-station-refurbished" />
           
+
           <Thread />
           <AssistantModal />
         </SidebarInset>

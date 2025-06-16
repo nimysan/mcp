@@ -1,32 +1,34 @@
-import { createDataStreamResponse } from 'ai'
+import { bedrock } from "@ai-sdk/amazon-bedrock";
+import { streamText } from "ai";
+import { z } from "zod";
 
-export async function POST() {
-  // 模拟的响应数据
-  const mockResponses = [
-    "你好!",
-    "我是一个销售助手。",
-    "我可以帮你了解我们的产品。",
-    "有什么我可以帮你的吗?"
-  ]
+export const maxDuration = 30;
 
-  // 创建数据流响应
-  return createDataStreamResponse({
-    // 设置响应状态和头部
-    status: 200,
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    },
-    // 执行流式响应
-    execute: async (writer) => {
-      // 模拟延迟发送每条消息
-      for (const text of mockResponses) {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        // 使用正确的数据流格式写入文本
-        writer.write(`0:{"id":"mock","role":"assistant","content":"${text}","createdAt":${Date.now()}}\n`)
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const result = streamText({
+    model: bedrock("anthropic.claude-3-5-sonnet-20240620-v1:0"),
+    messages,
+    tools: {
+      listProductList: {
+        description: "List product lists",
+        parameters: z.object({
+          query: z.string()
+        }),
+        execute: async ({ }) => {
+          // Server-side database access
+          const results = [
+            { "url": "https://www.jackery.com/products/explorer-1500-portable-power-station-refurbished", "isRecommended": true},
+            { "url": "https://www.jackery.com/products/jackery-solar-generator-2000-plus-kit-6kwh", "isRecommended": false }
+          ]
+          return {
+            "results": results
+          };
+        }
       }
     }
-  })
+  });
+  // debugger
+  return result.toDataStreamResponse();
 }
+

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProductLink } from './product-link';
+import { makeAssistantToolUI } from "@assistant-ui/react";
 
 interface ProductLinkItem {
   url: string;
@@ -23,3 +24,34 @@ export const ProductLinkGrid: React.FC<ProductLinkGridProps> = ({ items }) => {
     </div>
   );
 };
+
+
+export const SearchResultsUI = makeAssistantToolUI<{
+  query: string;
+}, {
+  results: Array<{
+    url: string;
+    isRecommended: boolean;
+  }>;
+}>({
+  toolName: "listProductList", // Must match the registered tool's name
+  render: ({ args, result }) => {
+    return (
+      <div className="search-results">
+        <h3>Search: {args.query}</h3>
+        {/* <h2>{JSON.stringify(result)}</h2> */}
+        {result && result.results ? (
+          result.results.map((item, index) => (
+            <ProductLink
+              key={`${item.url}-${index}`}
+              url={item.url}
+              isRecommended={item.isRecommended}
+            />
+          ))
+        ) : (
+          <p>No results found</p>
+        )}
+      </div>
+    );
+  }
+});

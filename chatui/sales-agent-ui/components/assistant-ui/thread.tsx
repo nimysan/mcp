@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 import { ProductLinkGrid } from "../product-link-grid";
-
+import {SearchResultsUI} from "../product-link-grid";
 export const Thread: FC = () => {
   return (
     <ThreadPrimitive.Root
@@ -100,12 +100,12 @@ const ThreadWelcomeSuggestions: FC = () => {
       </ThreadPrimitive.Suggestion>
       <ThreadPrimitive.Suggestion
         className="hover:bg-muted/80 flex max-w-sm grow basis-0 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in"
-        prompt="What is assistant-ui?"
+        prompt="List Products for Jackery?"
         method="replace"
         autoSend
       >
         <span className="line-clamp-2 text-ellipsis text-sm font-semibold">
-          What is assistant-ui?
+          List Products for Jackery
         </span>
       </ThreadPrimitive.Suggestion>
     </div>
@@ -208,19 +208,22 @@ const AssistantMessage: FC = () => {
       <div className="text-foreground max-w-[calc(var(--thread-max-width)*0.8)] break-words leading-7 col-span-2 col-start-2 row-start-1 my-1.5">
         <MessagePrimitive.Content components={{ Text: MarkdownText }} />
         <MessageError />
-      </div>
-        <ProductLinkGrid
+        <div>
+          <div>
+            <SearchResultsUI></SearchResultsUI>
+          </div>
+        {/* <ProductLinkGrid
             items={[
               { url: "https://www.jackery.com/products/explorer-1500-portable-power-station-refurbished", isRecommended: true },
               { url: "https://www.jackery.com/products/jackery-solar-generator-2000-plus-kit-6kwh" },
               // ... 更多产品
             ]}
-          />
-    
-
+          /> */}
+      </div>
+      </div>
       <AssistantActionBar />
-
       <BranchPicker className="col-start-2 row-start-2 -ml-2 mr-2" />
+      
     </MessagePrimitive.Root>
   );
 };

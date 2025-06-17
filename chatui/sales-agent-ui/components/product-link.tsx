@@ -105,7 +105,7 @@ export const ProductLink: React.FC<ProductLinkProps> = ({ url, isRecommended = f
   }, [url]);
 
   return (
-    <div className="relative flex flex-col gap-4 p-4 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors bg-white shadow-sm h-full">
+    <div className="relative flex flex-col gap-2 p-2 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors bg-white shadow-sm h-full">
       {isRecommended && <RecommendedIcon />}
       
       {/* 商品图片 */}
@@ -120,14 +120,14 @@ export const ProductLink: React.FC<ProductLinkProps> = ({ url, isRecommended = f
 
       {/* 商品信息 */}
       <div className="flex flex-col flex-grow">
-        <h3 className="text-lg font-semibold line-clamp-2 mb-2">
+        <h3 className="text-base font-semibold line-clamp-2 mb-1">
           {loading ? "Loading..." : productInfo.title}
         </h3>
         
         {/* 价格信息 */}
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm text-gray-500">参考价格:</span>
-          <span className="text-lg font-medium text-gray-900">
+          <span className="text-xs text-gray-500">参考价格:</span>
+          <span className="text-base font-medium text-gray-900">
             {productInfo.price}
           </span>
         </div>
@@ -137,7 +137,7 @@ export const ProductLink: React.FC<ProductLinkProps> = ({ url, isRecommended = f
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto inline-flex justify-center items-center px-4 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors w-full"
+          className="mt-auto inline-flex justify-center items-center px-3 py-1.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition-colors w-full"
         >
           More Detail
         </a>

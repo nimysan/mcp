@@ -41,13 +41,15 @@ export const SearchResultsUI = makeAssistantToolUI<{
         <h3>Search: {args.query}</h3>
         {/* <h2>{JSON.stringify(result)}</h2> */}
         {result && result.results ? (
-          result.results.map((item, index) => (
-            <ProductLink
-              key={`${item.url}-${index}`}
-              url={item.url}
-              isRecommended={item.isRecommended}
-            />
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {result.results.map((item, index) => (
+              <ProductLink
+                key={`${item.url}-${index}`}
+                url={item.url}
+                isRecommended={item.isRecommended}
+              />
+            ))}
+          </div>
         ) : (
           <p>No results found</p>
         )}

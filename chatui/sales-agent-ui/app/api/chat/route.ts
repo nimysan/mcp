@@ -1,15 +1,18 @@
 import { bedrock } from "@ai-sdk/amazon-bedrock";
 import { streamText } from "ai";
 import { z } from "zod";
+import { crawlProductDetail } from "@/app/utils/productCrawler";
 
 export const maxDuration = 30;
+
+const system_prompt = "你是一个导购专家，永远用中文输出. ## 输出要求 1. 不要把内部工具显示出来 2. 尽量以一个专业导购的语言 3. 如果希望是做性价比对比， 通常是从价格/电容量/充电时长等角度 然后以Markdown输出";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const result = streamText({
     model: bedrock("anthropic.claude-3-5-sonnet-20240620-v1:0"),
     messages,
-    system: "你是一个导购专家，永远用中文输出",
+    system: system_prompt,
     tools: {
       listProductList: {
         description: "List product lists",
@@ -27,24 +30,29 @@ export async function POST(req: Request) {
           };
         }
       },
-      getProductPrice: {
-        description: "Get Product Price By Specific URL",
+      getProductDetail: {
+        description: "Get Product Detail(like specification, price, promotion)",
         parameters: z.object({
           product_url: z.string()
         }),
-        execute: async ({ }) => {
-          // Server-side database access
-          const results = {
-            "price": 224.34,
-            "Currency": "USD"
+        execute: async ({ product_url }) => {
+          try {
+            const productDetail = await crawlProductDetail(product_url);
+            return {
+              results: productDetail
+            };
+          } catch (error) {
+            console.error('Error getting product detail:', error);
+            return {
+              results: {
+                price: 0,
+                Currency: 'USD'
+              }
+            };
           }
-          return {
-            "results": results
-          };
         }
       }
     },
   });
   return result.toDataStreamResponse();
 }
-
